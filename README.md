@@ -1,6 +1,6 @@
 # StreamKompressor
 
-StreamKompressor is a Python library that compress and decompress sample data streams from IoT devices and sensors.
+StreamKompressor is a Python library for compressing and decompressing sample data streams from IoT devices and sensors.
 It also can divide the data in a maximum-byte-number block size, ideal for sending data to a limited packet size communication protocol such LoraWan, non continuos satellite connectivity (LEO) or distributed storage systems.
 
 ## Algorithm
@@ -32,6 +32,9 @@ sk = StreamKompressor()
 
 #Compress
 result = sk.kompress(data)
+
+#Decompress
+sk.dekompress(result)
 ```
 
 ## Contributing
