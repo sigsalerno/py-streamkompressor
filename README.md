@@ -11,7 +11,7 @@ StreamKompressor manages only integer values and utf-8 encoded labels. It perfor
 Use the package manager [pip](https://pip.pypa.io/en/stable/) to install foobar.
 
 ```bash
-pip install https://github.com/sigsalerno/py-streamkompressor/archive/refs/heads/master.zip
+pip install py-streamkompressor
 ```
 
 ## Usage
@@ -31,10 +31,10 @@ data = [
 sk = StreamKompressor()
 
 #Compress
-result = sk.kompress(data)
+result = sk.kompress(data, label="optional")
 
 #Decompress
-sk.dekompress(result)
+data, label = sk.dekompress(result)
 ```
 
 ## Contributing

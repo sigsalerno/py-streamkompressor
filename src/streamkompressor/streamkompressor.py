@@ -1,5 +1,6 @@
 import msgpack 
 
+LABEL='!'
 class StreamKompressor:
 
     def __init__(self, chunk_size = 0, max_chunks = 0):
@@ -14,11 +15,22 @@ class StreamKompressor:
 
     #Encoding algorithm wrapper, returns msgpack encoded object
     def _encode(self, payload):
+        if self.label:
+            payload[LABEL] = self.label
+
         return(msgpack.packb(payload))
 
     #Decoding algorithm wrapper, returns msgpack encoded object
     def _decode(self, payload):
-        return(msgpack.unpackb(payload))
+
+        label = False
+        decoded = msgpack.unpackb(payload)
+
+        if LABEL in decoded:
+            label = decoded[LABEL]
+            del decoded[LABEL]
+        
+        return decoded, label
 
     def append(self, stream: dict):
         """
@@ -75,19 +87,23 @@ class StreamKompressor:
     def _chunk_size(self):
         return len(self._encode(self.streams))
 
-    def kompress(self, samples = []):
+    def kompress(self, samples = [], label = False):
         """
         Returns the kompressed and encoded chunk sizes
 
         Parameters
         samplings : list 
             Optional: list of sampling objects
+        label: string
+            Optional: A label for the data
 
         Returns
         list
             List of the data chunks ordered from the oldest to the newest, false if chunk size is passed
             
         """
+
+        self.label = label 
 
         if len(samples) > 0:
             for sample in samples:
@@ -112,7 +128,7 @@ class StreamKompressor:
         """
         result = []
         for chunk in chunks:
-            decoded_chunk = self._decode(chunk)
+            decoded_chunk, label = self._decode(chunk)
             
 
             unpacked = False
@@ -134,4 +150,4 @@ class StreamKompressor:
 
             result += unpacked
         
-        return result 
+        return result, label
